@@ -65,7 +65,18 @@
           <p class="project-type">Soundscape · Electronic composition</p>
           <h3>Utopia</h3>
           <p>Based on Wisława Szymborska’s poem, the piece explores an abandoned island through sound—moving from dynamic processing into harmonic contrast while holding a continuous musical stream.</p>
-          <button class="text-button project-toggle" aria-expanded="false">Read more <span>↗</span></button>
+          <p class="audio-credit">DSPoem project · 04:05</p>
+          <div class="inline-player utopia-player" data-audio-player data-title="Utopia">
+            <audio src="assets/utopia-final.mp3" preload="metadata"></audio>
+            <button class="play-button small" data-play aria-label="Play Utopia">
+              <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 9 6-9 6Z"/></svg>
+              <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6v12M16 6v12"/></svg>
+            </button>
+            <div class="seek-group">
+              <input class="seek-slider" data-seek type="range" min="0" max="100" value="0" step="0.1" aria-label="Utopia playback position">
+              <div class="player-time"><span data-current>00:00</span><span data-duration>04:05</span></div>
+            </div>
+          </div>
         </div>
       </article>
 
@@ -108,22 +119,6 @@
         </article>
       </div>
 
-      <article class="audio-work reveal" data-audio-player data-title="DSPoem">
-        <div class="audio-work-copy">
-          <p class="project-type">Audio work · 04:05</p>
-          <h3>DSPoem</h3>
-          <p>Spoken language becomes raw musical material in this spectral study. Fragments of voice are stretched, filtered, and reassembled into a shifting soundscape between poetry, texture, and electronic composition.</p>
-        </div>
-        <audio src="assets/dspoem-final.mp3" preload="metadata"></audio>
-        <button class="play-button" data-play aria-label="Play DSPoem">
-          <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 9 6-9 6Z"/></svg>
-          <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6v12M16 6v12"/></svg>
-        </button>
-        <div class="seek-group seek-group-large">
-          <input class="seek-slider" data-seek type="range" min="0" max="100" value="0" step="0.1" aria-label="DSPoem playback position">
-          <div class="player-time"><span data-current>00:00</span><span data-duration>04:05</span></div>
-        </div>
-      </article>
     </section>
 
     <section id="about" class="about section" aria-labelledby="about-title">
