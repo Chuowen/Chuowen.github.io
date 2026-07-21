@@ -1,12 +1,12 @@
 const menuButton = document.querySelector('.menu-button');
 const nav = document.querySelector('#site-nav');
-menuButton.addEventListener('click', () => {
+menuButton?.addEventListener('click', () => {
   const open = menuButton.getAttribute('aria-expanded') === 'true';
   menuButton.setAttribute('aria-expanded', String(!open));
   menuButton.textContent = open ? 'Menu' : 'Close';
   nav.classList.toggle('open', !open);
 });
-nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+nav?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
   menuButton.setAttribute('aria-expanded', 'false');
   menuButton.textContent = 'Menu';
   nav.classList.remove('open');
@@ -88,4 +88,5 @@ players.forEach(player => {
   });
 });
 
-document.querySelector('#year').textContent = new Date().getFullYear();
+const year = document.querySelector('#year');
+if (year) year.textContent = new Date().getFullYear();
