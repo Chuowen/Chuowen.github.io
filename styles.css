@@ -6,3 +6,7 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.album-cover img{transition:none}}
 .home-copy{min-width:0}
 @media(max-width:760px){.home-intro{grid-template-columns:minmax(0,1fr)}.home-copy h1{font-size:17vw}.works-hero h1{font-size:18vw}.home-lead,.home-bio{max-width:100%}}
+
+/* Cooler, quieter blue palette */
+:root{--ink:#172733;--paper:#e8eff3;--white:#f3f6f7;--red:#c85b49;--blue:#315f86;--yellow:#dfc260;--line:rgba(23,39,51,.22)}
+.home-bio,.work-copy>p:not(.project-type):not(.audio-credit){color:#4f626e}.reel{background:#b8ccd9}.works-contact{background:#cbd9e2}.album-cover{background:#e1e8ec}.video-shell video{background:#91a7b5}
