@@ -10,3 +10,5 @@
 /* Cooler, quieter blue palette */
 :root{--ink:#172733;--paper:#d8e7f0;--white:#e7f0f5;--red:#c85b49;--blue:#315f86;--yellow:#dfc260;--line:rgba(23,39,51,.22)}
 .home-bio,.work-copy>p:not(.project-type):not(.audio-credit){color:#4f626e}.reel{background:#a9c4d5}.works-contact{background:#bdd2df}.album-cover{background:#d5e2ea}.video-shell video{background:#86a4b7}
+.works-hero h1{font-size:clamp(76px,10vw,150px)}
+@media(max-width:760px){.works-hero h1{font-size:13vw}}
