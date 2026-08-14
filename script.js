@@ -1,6 +1,14 @@
 const menu_button = document.querySelector('.menu-button');
 const site_nav = document.querySelector('#site-nav');
 
+site_nav?.querySelectorAll('a[href="projects.html"]').forEach(link => {
+  link.childNodes.forEach(node => {
+    if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() === 'Projects') {
+      node.textContent = 'Installation';
+    }
+  });
+});
+
 function closeMenu() {
   if (!menu_button || !site_nav) return;
   menu_button.setAttribute('aria-expanded', 'false');
@@ -49,6 +57,7 @@ audio_players.forEach(player => {
   const current = player.querySelector('[data-current]');
   const duration = player.querySelector('[data-duration]');
   const title = player.dataset.title;
+  let is_seeking = false;
 
   function updateButton(is_playing) {
     play_button.classList.toggle('playing', is_playing);
@@ -61,6 +70,7 @@ audio_players.forEach(player => {
         const other_audio = other.querySelector('audio');
         if (other_audio !== audio) other_audio.pause();
       });
+      document.querySelectorAll('video').forEach(video => video.pause());
       audio.play();
     } else {
       audio.pause();
@@ -70,17 +80,115 @@ audio_players.forEach(player => {
   audio.addEventListener('play', () => updateButton(true));
   audio.addEventListener('pause', () => updateButton(false));
   audio.addEventListener('timeupdate', () => {
-    if (!audio.duration) return;
+    if (!audio.duration || is_seeking) return;
     const progress = audio.currentTime / audio.duration * 100;
     seek.value = progress;
     seek.style.setProperty('--progress', `${progress}%`);
     current.textContent = formatTime(audio.currentTime);
   });
-  seek.addEventListener('input', () => {
+  function seekToProgress() {
     const progress = Number(seek.value);
-    if (audio.duration) audio.currentTime = progress / 100 * audio.duration;
+    if (Number.isFinite(audio.duration)) audio.currentTime = progress / 100 * audio.duration;
     seek.style.setProperty('--progress', `${progress}%`);
+    current.textContent = formatTime(progress / 100 * audio.duration);
+  }
+  seek.addEventListener('pointerdown', () => { is_seeking = true; });
+  seek.addEventListener('input', () => {
+    is_seeking = true;
+    const progress = Number(seek.value);
+    seek.style.setProperty('--progress', `${progress}%`);
+    if (Number.isFinite(audio.duration)) current.textContent = formatTime(progress / 100 * audio.duration);
   });
+  seek.addEventListener('change', () => { seekToProgress(); is_seeking = false; });
+  seek.addEventListener('pointerup', () => { seekToProgress(); is_seeking = false; });
+  seek.addEventListener('pointercancel', () => { is_seeking = false; });
+});
+
+const video_players = [...document.querySelectorAll('[data-video-player]')];
+video_players.forEach(player => {
+  const video = player.querySelector('video');
+  const play_button = player.querySelector('[data-video-play]');
+  const mute_button = player.querySelector('[data-video-mute]');
+  const seek = player.querySelector('[data-video-seek]');
+  const current = player.querySelector('[data-video-current]');
+  const duration = player.querySelector('[data-video-duration]');
+  const title = player.dataset.title;
+  let is_seeking = false;
+
+  function updatePlayButton() {
+    const is_playing = !video.paused;
+    play_button.textContent = is_playing ? 'Pause' : 'Play';
+    play_button.setAttribute('aria-label', `${is_playing ? 'Pause' : 'Play'} ${title}`);
+  }
+  function updateMuteButton() {
+    const has_sound = !video.muted && video.volume > 0;
+    mute_button.textContent = has_sound ? 'Sound on' : 'Muted';
+    mute_button.setAttribute('aria-label', `${has_sound ? 'Mute' : 'Unmute'} ${title}`);
+  }
+  function seekToProgress() {
+    if (!Number.isFinite(video.duration)) return;
+    const progress = Number(seek.value);
+    video.currentTime = progress / 100 * video.duration;
+    seek.style.setProperty('--progress', `${progress}%`);
+    current.textContent = formatTime(video.currentTime);
+  }
+
+  video.muted = false;
+  video.defaultMuted = false;
+  video.volume = 1;
+  updateMuteButton();
+  play_button.addEventListener('click', () => {
+    if (video.paused) video.play(); else video.pause();
+  });
+  mute_button.addEventListener('click', () => {
+    video.muted = !video.muted;
+    if (!video.muted && video.volume === 0) video.volume = 1;
+    updateMuteButton();
+  });
+  video.addEventListener('loadedmetadata', () => {
+    duration.textContent = formatTime(video.duration);
+  });
+  video.addEventListener('play', () => {
+    video_players.forEach(other => {
+      const other_video = other.querySelector('video');
+      if (other_video !== video) other_video.pause();
+    });
+    audio_players.forEach(other => other.querySelector('audio').pause());
+    updatePlayButton();
+  });
+  video.addEventListener('pause', updatePlayButton);
+  video.addEventListener('volumechange', updateMuteButton);
+  video.addEventListener('timeupdate', () => {
+    if (!video.duration || is_seeking) return;
+    const progress = video.currentTime / video.duration * 100;
+    seek.value = progress;
+    seek.style.setProperty('--progress', `${progress}%`);
+    current.textContent = formatTime(video.currentTime);
+  });
+  video.addEventListener('ended', updatePlayButton);
+  seek.addEventListener('pointerdown', () => { is_seeking = true; });
+  seek.addEventListener('input', () => {
+    is_seeking = true;
+    const progress = Number(seek.value);
+    seek.style.setProperty('--progress', `${progress}%`);
+    if (Number.isFinite(video.duration)) current.textContent = formatTime(progress / 100 * video.duration);
+  });
+  seek.addEventListener('change', () => { seekToProgress(); is_seeking = false; });
+  seek.addEventListener('pointerup', () => { seekToProgress(); is_seeking = false; });
+  seek.addEventListener('pointercancel', () => { is_seeking = false; });
+});
+
+document.querySelectorAll('video').forEach(video => {
+  if (video.closest('[data-video-player]')) return;
+  function initializeSound() {
+    if (video.dataset.soundInitialized) return;
+    video.muted = false;
+    video.defaultMuted = false;
+    video.volume = 1;
+    video.dataset.soundInitialized = 'true';
+  }
+  initializeSound();
+  video.addEventListener('loadedmetadata', initializeSound);
 });
 
 const filter_buttons = [...document.querySelectorAll('[data-filter]')];
