@@ -7,10 +7,12 @@ const port = 8000;
 const mime_types = {
   '.css': 'text/css; charset=utf-8',
   '.html': 'text/html; charset=utf-8',
+  '.jpeg': 'image/jpeg',
   '.jpg': 'image/jpeg',
   '.js': 'text/javascript; charset=utf-8',
   '.mp3': 'audio/mpeg',
   '.mp4': 'video/mp4',
+  '.mov': 'video/quicktime',
   '.png': 'image/png',
   '.wav': 'audio/wav',
   '.webp': 'image/webp',
@@ -19,7 +21,11 @@ const mime_types = {
 function sendFile(request, response, file_path, size) {
   const content_type = mime_types[extname(file_path).toLowerCase()] || 'application/octet-stream';
   const range = request.headers.range;
-  const shared_headers = { 'Accept-Ranges': 'bytes', 'Content-Type': content_type };
+  const shared_headers = {
+    'Accept-Ranges': 'bytes',
+    'Cache-Control': 'no-store',
+    'Content-Type': content_type,
+  };
 
   if (!range) {
     response.writeHead(200, { ...shared_headers, 'Content-Length': size });

@@ -27,7 +27,7 @@ This server supports byte-range requests, allowing audio and video timelines to 
 
 ## Content still needed
 
-- Confirmed years for Utopia, Searching, and Agbogbloshie
+- Confirmed years for Utopia, Unbound, and Agbogbloshie
 - Installation project titles, text, and documentation
 - Locations, exhibition context, and credits
 - Instagram, SoundCloud, Bandcamp, or Spotify URLs

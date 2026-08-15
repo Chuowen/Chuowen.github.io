@@ -104,6 +104,12 @@ audio_players.forEach(player => {
   seek.addEventListener('pointercancel', () => { is_seeking = false; });
 });
 
+function enableVideoSound(video) {
+  video.muted = false;
+  video.defaultMuted = false;
+  if (video.volume === 0) video.volume = 1;
+}
+
 const video_players = [...document.querySelectorAll('[data-video-player]')];
 video_players.forEach(player => {
   const video = player.querySelector('video');
@@ -133,12 +139,15 @@ video_players.forEach(player => {
     current.textContent = formatTime(video.currentTime);
   }
 
-  video.muted = false;
-  video.defaultMuted = false;
-  video.volume = 1;
+  enableVideoSound(video);
   updateMuteButton();
   play_button.addEventListener('click', () => {
-    if (video.paused) video.play(); else video.pause();
+    if (video.paused) {
+      enableVideoSound(video);
+      video.play();
+    } else {
+      video.pause();
+    }
   });
   mute_button.addEventListener('click', () => {
     video.muted = !video.muted;
@@ -180,15 +189,13 @@ video_players.forEach(player => {
 
 document.querySelectorAll('video').forEach(video => {
   if (video.closest('[data-video-player]')) return;
-  function initializeSound() {
-    if (video.dataset.soundInitialized) return;
-    video.muted = false;
-    video.defaultMuted = false;
-    video.volume = 1;
-    video.dataset.soundInitialized = 'true';
-  }
-  initializeSound();
-  video.addEventListener('loadedmetadata', initializeSound);
+  enableVideoSound(video);
+  video.addEventListener('loadedmetadata', () => enableVideoSound(video));
+  video.addEventListener('pointerdown', () => enableVideoSound(video), { once: true });
+  video.addEventListener('play', () => {
+    enableVideoSound(video);
+    requestAnimationFrame(() => enableVideoSound(video));
+  });
 });
 
 const filter_buttons = [...document.querySelectorAll('[data-filter]')];
@@ -271,3 +278,12 @@ function startFlowField() {
 }
 startFlowField();
 document.querySelectorAll('[data-year]').forEach(element => { element.textContent = new Date().getFullYear(); });
+
+document.querySelectorAll('[data-program-close]').forEach(button => {
+  button.addEventListener('click', () => {
+    const cover = button.closest('.music-cover');
+    if (!cover) return;
+    cover.open = false;
+    cover.querySelector('summary')?.focus();
+  });
+});
