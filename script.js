@@ -59,10 +59,12 @@ audio_players.forEach(player => {
   const title = player.dataset.title;
   let is_seeking = false;
 
+  symbol.textContent = '';
+  symbol.setAttribute('aria-hidden', 'true');
+
   function updateButton(is_playing) {
     play_button.classList.toggle('playing', is_playing);
     play_button.setAttribute('aria-label', `${is_playing ? 'Pause' : 'Play'} ${title}`);
-    symbol.textContent = is_playing ? 'Ⅱ' : '▶';
   }
   play_button.addEventListener('click', () => {
     if (audio.paused) {
